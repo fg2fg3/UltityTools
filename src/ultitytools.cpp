@@ -16,31 +16,38 @@ int str2hex(char *pstr)
     pt = pstr;
     if(!pstr)
         return 0;
+
     if(pt[0]!=0)
         return 0;
+
     if(pt[1]!='x' && pt[1] !='X')
         return 0;
+
     pt +=2;
+
     while(*pt)
     {
         ans = ans << 4;
-        if( (*pt >= 'A' && *pt <= "F") || (*pt >= 'a' && *pt <= 'f'))
-                ans = ans | ((*pt & 0x5f) - 0x37);
-        else
+        if( (*pt >= 'A' && *pt <= 'F') || (*pt >= 'a' && *pt <= 'f'))
+            ans = ans | ((*pt & 0x5f) - 0x37);
+        else if(*pt >= '0' && *pt <= '9')
             ans = ans | (*pt) - 0x30;
+        else
+            break;
         pt++;
     }
     return ans;
 }
 
-int executeCMD(char *cmd)
-{
-    FILE *fp = NULL;
-    if((fp=popen(cmd,"r")) != NULL){
-        fgets(cmd,sizeof(cmd),fp);
-        pclose(fp);
-    }
-}
+//以下适合linux
+//int executeCMD(char *cmd)
+//{
+//    FILE *fp = NULL;
+//    if((fp=popen(cmd,"r")) != NULL){
+//        fgets(cmd,sizeof(cmd),fp);
+//        pclose(fp);
+//    }
+//}
 
 UltityTools::UltityTools(QWidget *parent)
 	: QMainWindow(parent)
@@ -151,7 +158,7 @@ void UltityTools::OnBtHexCompare()
 
 void UltityTools::OnBtSerialOpenClicked()
 {
-	SerialPort *sp = new SerialPort();
+    SerialPort *sp = new SerialPort();
 	int ret =  sp->openPort("COM6");
 
 
